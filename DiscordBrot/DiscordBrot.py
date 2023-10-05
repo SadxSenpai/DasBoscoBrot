@@ -1,3 +1,5 @@
+from lib2to3.pgen2.literals import simple_escapes
+import pathlib
 import pdf2image
 import requests
 import json
@@ -12,7 +14,7 @@ import gdown
 import time
 import tempfile
 import asyncio
-from discord.ext import tasks
+from discord.ext import tasks, commands
 from PIL import Image
 from colorama import Fore, Style
 from pdf2image import convert_from_path, convert_from_bytes
@@ -110,6 +112,8 @@ class FunnyBadge(Client):
     async def setup_hook(self) -> None:
         """ This is called when the bot boots, to setup the global commands """
         await self.tree.sync()
+        
+
 
 
 # Variable to store the bot class and interact with it
@@ -130,7 +134,25 @@ async def on_ready():
         Use this URL to invite {client.user} to your server:
         {Fore.LIGHTBLUE_EX}https://discord.com/api/oauth2/authorize?client_id={client.user.id}&scope=applications.commands%20bot{Fore.RESET}
     """), end="\n\n")
+    
+    pdf_loop.start()
+    
+@tasks.loop(seconds=30)
+async def pdf_loop():
+    
+    #download the pdf from google drive with gdown
+    url = "https://drive.google.com/drive/folders/1WB5lNSE901jWigIAk0dgxKIG-ljaSzQO"
+    gdown.download_folder(url, quiet=True, use_cookies=False)
+    
+    time.sleep(10)
 
+    #rename the pdf files inside the folder Speiseplan to file + counter + .pdf
+    counter = 1
+    for filename in os.listdir('Speiseplan'):
+        if filename.endswith('.pdf'):
+            os.rename(f'Speiseplan/{filename}', f'Speiseplan/file' + str(counter) + '.pdf')
+            counter += 1
+            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed to file.pdf")
 
 @client.tree.command()
 async def hello(interaction: Interaction):
@@ -148,13 +170,7 @@ async def essen(interaction: Interaction):
     
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
     
-    #download the pdf from google drive with gdown
-    url = "https://drive.google.com/file/d/1CbZNemAswIJvw3zRMppaQQZ-HLyZRDBv/view"
-    output = "file.pdf"
-    gdown.download(url=url, output=output, quiet=False, fuzzy=True)
-    
     #convert the pdf to an image
-
     pages = pdf2image.convert_from_path('file.pdf', 500, poppler_path=r'C:\Program Files\poppler-23.08.0\Library\bin')
     for page in pages:
         page.save('out.jpg', 'JPEG')
