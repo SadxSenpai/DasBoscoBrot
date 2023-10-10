@@ -1,5 +1,8 @@
+from email import message
 from lib2to3.pgen2.literals import simple_escapes
 import pathlib
+import shutil
+from tkinter import FIRST
 import pdf2image
 import requests
 import json
@@ -14,6 +17,8 @@ import gdown
 import time
 import tempfile
 import asyncio
+
+from pathlib import Path
 from discord.ext import tasks, commands
 from PIL import Image
 from colorama import Fore, Style
@@ -104,7 +109,7 @@ with open("config.json", "w") as f:
     json.dump(config, f, indent=2)
 
 
-class FunnyBadge(Client):
+class BoscoBot(Client):
     def __init__(self, *, intents: Intents):
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
@@ -117,9 +122,7 @@ class FunnyBadge(Client):
 
 
 # Variable to store the bot class and interact with it
-# Since this is a simple bot to run 1 command over slash commands
-# We then do not need any intents to listen to events
-client = FunnyBadge(intents=Intents.none())
+client = BoscoBot(intents=Intents.none())
     
 #when the bot is ready, print a message in the console
 @client.event
@@ -135,24 +138,72 @@ async def on_ready():
         {Fore.LIGHTBLUE_EX}https://discord.com/api/oauth2/authorize?client_id={client.user.id}&scope=applications.commands%20bot{Fore.RESET}
     """), end="\n\n")
     
+
     pdf_loop.start()
+    print("Ready!")
     
-@tasks.loop(seconds=30)
+@tasks.loop(hours=1)
 async def pdf_loop():
+    channel = client.get_channel(902414002980782110)
+    await channel.send("Looped")
+
+    #delte exiting the contents of the folder Speiseplan
+    folder = 'Speiseplan'
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path) 
+                print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} deleted")
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
     
     #download the pdf from google drive with gdown
+    print(f"> downloading pdfs from google drive")
     url = "https://drive.google.com/drive/folders/1WB5lNSE901jWigIAk0dgxKIG-ljaSzQO"
     gdown.download_folder(url, quiet=True, use_cookies=False)
+    print(f"> pdfs downloaded")
     
-    time.sleep(10)
+    #wait 5 seconds
+    print(f"> waiting 5 seconds")
+    time.sleep(5)
 
-    #rename the pdf files inside the folder Speiseplan to file + counter + .pdf
+    #rename the pdf files inside the folder Speiseplan
     counter = 1
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
             os.rename(f'Speiseplan/{filename}', f'Speiseplan/file' + str(counter) + '.pdf')
             counter += 1
-            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed to file.pdf")
+            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed")
+    
+    #convert all pdf files  to an image
+    popplerpath = r'C:\Program Files\poppler-23.08.0\Library\bin'
+    
+    counter = 1
+    for filename in os.listdir('Speiseplan'):
+        if filename.endswith('.pdf'):
+            pages = convert_from_path(f'Speiseplan/{filename}', 500, poppler_path=popplerpath,first_page=1, last_page=1)
+            for page in pages:
+                page.save('Speiseplan/essen' + str(counter) +'.jpg', 'JPEG')
+                counter += 1
+                print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
+                time.sleep(2)
+                
+    print(f"> Now trying to Send into Channel")         
+    #send pictures into channel / 902414002980782110
+    for filename in os.listdir('Speiseplan'):
+        if filename.endswith('.jpg'):
+            #get the channel
+            await client.wait_until_ready()
+            guild = client.get_guild(693821560028528680)
+            channel = client.get_channel(902414002980782110)
+            await channel.send("Looped")
+            #await channel.send(file=discord.File(f'Speiseplan/{filename}'))
+            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
+            time.sleep(2)
+
 
 @client.tree.command()
 async def hello(interaction: Interaction):
@@ -170,19 +221,13 @@ async def essen(interaction: Interaction):
     
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
     
-    #convert the pdf to an image
-    pages = pdf2image.convert_from_path('file.pdf', 500, poppler_path=r'C:\Program Files\poppler-23.08.0\Library\bin')
-    for page in pages:
-        page.save('out.jpg', 'JPEG')
-    
     #send the image to the channel
     await interaction.response.defer()
     await asyncio.sleep(10)
     await interaction.followup.send(file=discord.File('out.jpg'))
     
     #delete the pdf and image files
-    os.remove('file.pdf')
-    os.remove('out.jpg')
+    
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL}files deleted")
 
 # Runs the bot with the token you provided
