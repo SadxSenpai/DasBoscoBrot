@@ -2,6 +2,7 @@ from email import message
 from lib2to3.pgen2.literals import simple_escapes
 import pathlib
 import shutil
+from telnetlib import theNULL
 from tkinter import FIRST
 import pdf2image
 import requests
@@ -17,6 +18,7 @@ import gdown
 import time
 import tempfile
 import asyncio
+import datetime
 
 from pathlib import Path
 from discord.ext import tasks, commands
@@ -138,14 +140,10 @@ async def on_ready():
         {Fore.LIGHTBLUE_EX}https://discord.com/api/oauth2/authorize?client_id={client.user.id}&scope=applications.commands%20bot{Fore.RESET}
     """), end="\n\n")
     
-
-    pdf_loop.start()
     print("Ready!")
     
 @tasks.loop(hours=1)
 async def pdf_loop():
-    channel = client.get_channel(902414002980782110)
-    await channel.send("Looped")
 
     #delte exiting the contents of the folder Speiseplan
     folder = 'Speiseplan'
@@ -190,20 +188,6 @@ async def pdf_loop():
                 counter += 1
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
-                
-    print(f"> Now trying to Send into Channel")         
-    #send pictures into channel / 902414002980782110
-    for filename in os.listdir('Speiseplan'):
-        if filename.endswith('.jpg'):
-            #get the channel
-            await client.wait_until_ready()
-            guild = client.get_guild(693821560028528680)
-            channel = client.get_channel(902414002980782110)
-            await channel.send("Looped")
-            #await channel.send(file=discord.File(f'Speiseplan/{filename}'))
-            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
-            time.sleep(2)
-
 
 @client.tree.command()
 async def hello(interaction: Interaction):
@@ -220,15 +204,19 @@ async def hello(interaction: Interaction):
 async def essen(interaction: Interaction):
     
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
-    
-    #send the image to the channel
+    print(f"> running convert loop")
     await interaction.response.defer()
-    await asyncio.sleep(10)
-    await interaction.followup.send(file=discord.File('out.jpg'))
-    
-    #delete the pdf and image files
-    
-    print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL}files deleted")
+    await pdf_loop()
+    print(f"> convert loop finished")
+
+    #send all .jpg files in the folder Speiseplan
+    for filename in os.listdir('Speiseplan'):
+        if filename.endswith('.jpg'):
+            file = discord.File(f'Speiseplan/{filename}')
+            await interaction.channel.send(file=file)
+            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
+            time.sleep(2)
+    await interaction.followup.send("Hier sind die Aktuellen Speisepläne :) ")
 
 # Runs the bot with the token you provided
 client.run(token)
