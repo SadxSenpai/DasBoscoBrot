@@ -139,9 +139,8 @@ async def on_ready():
     
     print("Ready!")
     pdf_loop.start()
-    weekly_message.start()
     
-@tasks.loop(hours=24)
+@tasks.loop(hours=168)
 async def pdf_loop():
 
     #delte exiting the contents of the folder Speiseplan
@@ -187,9 +186,7 @@ async def pdf_loop():
                 counter += 1
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
-
-@tasks.loop(hours=168)
-async def weekly_message():
+                
     print('sending weekly message...')
     channel = client.get_channel(902414002980782110)
     
@@ -210,6 +207,7 @@ async def hello(interaction: Interaction):
     await interaction.response.send_message(inspect.cleandoc(f"""
         Hi **{interaction.user}**, thank you for saying hello to me.
     """))
+
 
 # Runs the bot with the token you provided
 client.run(token)
