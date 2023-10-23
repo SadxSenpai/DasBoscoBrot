@@ -119,12 +119,9 @@ class BoscoBot(Client):
     async def setup_hook(self) -> None:
         """ This is called when the bot boots, to setup the global commands """
         await self.tree.sync()
-        
-
-
 
 # Variable to store the bot class and interact with it
-client = BoscoBot(intents=Intents.none())
+client = BoscoBot(intents=Intents.default())
     
 #when the bot is ready, print a message in the console
 @client.event
@@ -141,8 +138,10 @@ async def on_ready():
     """), end="\n\n")
     
     print("Ready!")
+    pdf_loop.start()
+    weekly_message.start()
     
-@tasks.loop(hours=1)
+@tasks.loop(hours=24)
 async def pdf_loop():
 
     #delte exiting the contents of the folder Speiseplan
@@ -189,6 +188,19 @@ async def pdf_loop():
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
 
+@tasks.loop(hours=168)
+async def weekly_message():
+    print('sending weekly message...')
+    channel = client.get_channel(902414002980782110)
+    
+    #send all .jpg files in the folder Speiseplan
+    for filename in os.listdir('Speiseplan'):
+        if filename.endswith('.jpg'):
+            file = discord.File(f'Speiseplan/{filename}')
+            await channel.send(file=file)
+            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
+            time.sleep(2)
+
 @client.tree.command()
 async def hello(interaction: Interaction):
     # Responds in the console that the command has been ran
@@ -198,25 +210,6 @@ async def hello(interaction: Interaction):
     await interaction.response.send_message(inspect.cleandoc(f"""
         Hi **{interaction.user}**, thank you for saying hello to me.
     """))
-    
-#command to get an image from google drive and display it in the channel
-@client.tree.command()
-async def essen(interaction: Interaction):
-    
-    print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
-    print(f"> running convert loop")
-    await interaction.response.defer()
-    await pdf_loop()
-    print(f"> convert loop finished")
-
-    #send all .jpg files in the folder Speiseplan
-    for filename in os.listdir('Speiseplan'):
-        if filename.endswith('.jpg'):
-            file = discord.File(f'Speiseplan/{filename}')
-            await interaction.channel.send(file=file)
-            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
-            time.sleep(2)
-    await interaction.followup.send("Hier sind die Aktuellen Speisepläne :) ")
 
 # Runs the bot with the token you provided
 client.run(token)
