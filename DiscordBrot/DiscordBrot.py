@@ -140,7 +140,7 @@ async def on_ready():
     """), end="\n\n")
     
     print("Ready!")
-    pdf_loop.start()
+    #pdf_loop.start()
     
 @tasks.loop(hours=168)
 async def pdf_loop():
