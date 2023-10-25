@@ -208,6 +208,16 @@ async def hello(interaction: Interaction):
     await interaction.response.send_message(inspect.cleandoc(f"""
         Hi **{interaction.user}**, thank you for saying hello to me.
     """))
+    
+@client.tree.command()
+async def praisme(interaction: Interaction):
+    # Responds in the console that the command has been ran
+    print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
+
+    # Then responds in the channel with this message
+    await interaction.response.send_message(inspect.cleandoc(f"""
+        **{interaction.user}**, you are a good egg and i am pround of you.
+    """))
 
 
 # Runs the bot with the token you provided
