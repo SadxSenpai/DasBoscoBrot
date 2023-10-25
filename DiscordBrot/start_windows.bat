@@ -1,5 +1,5 @@
 @echo off
-title GiveMeBadge
+title Marv Bot
 
 :: This script will run the python script that will run the program
 :: It will also check if python is installed and if it is in PATH
@@ -22,7 +22,7 @@ IF %ERRORLEVEL% NEQ 0 (
   exit
 )
 
-python index.py
+python DiscordBrot.py
 
 pause
 exit

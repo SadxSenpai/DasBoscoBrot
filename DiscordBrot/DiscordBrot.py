@@ -143,6 +143,7 @@ async def on_ready():
 @tasks.loop(hours=168)
 async def pdf_loop():
 
+
     #delte exiting the contents of the folder Speiseplan
     folder = 'Speiseplan'
     for filename in os.listdir(folder):
@@ -194,7 +195,7 @@ async def pdf_loop():
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/{filename}')
-            await channel.send(file=file)
+            await channel.send(file=file, delete_after=86400)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
 
