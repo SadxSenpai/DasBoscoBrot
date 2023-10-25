@@ -110,7 +110,6 @@ with open("config.json", "w") as f:
     # If you don't want to indent, you can remove the indent=2 from code
     json.dump(config, f, indent=2)
 
-
 class BoscoBot(Client):
     def __init__(self, *, intents: Intents):
         super().__init__(intents=intents)
@@ -122,6 +121,9 @@ class BoscoBot(Client):
 
 # Variable to store the bot class and interact with it
 client = BoscoBot(intents=Intents.default())
+Intents.dm_messages = False
+Intents.dm_reactions = False
+Intents.dm_typing = False
     
 #when the bot is ready, print a message in the console
 @client.event
