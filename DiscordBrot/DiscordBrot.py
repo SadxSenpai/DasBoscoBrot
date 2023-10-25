@@ -176,7 +176,7 @@ async def pdf_loop():
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed")
     
     #convert all pdf files  to an image
-    popplerpath = r'C:\Program Files\poppler-23.08.0\Library\bin'
+    popplerpath = r'poppler-23.08.0\Library\bin'
     
     counter = 1
     for filename in os.listdir('Speiseplan'):
@@ -189,7 +189,7 @@ async def pdf_loop():
                 time.sleep(2)
                 
     print('sending weekly message...')
-    channel = client.get_channel(902414002980782110)
+    channel = client.get_channel(1166651023822159882)
     
     #send all .jpg files in the folder Speiseplan
     for filename in os.listdir('Speiseplan'):
