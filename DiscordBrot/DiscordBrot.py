@@ -223,15 +223,31 @@ async def praiseme(interaction: Interaction):
     await interaction.response.send_message(inspect.cleandoc(f"""
         **{interaction.user}**, you are a good egg and i am pround of you.
     """))
-    
+
+def cooldown_command(rate, per, type=commands.BucketType.user):
+    return commands.cooldown(rate, per, type)
+
+command_in_use = False
 
 @client.tree.command()
 @commands.guild_only()
+@cooldown_command(1, 60)
 async def tetris(interaction: Interaction): #Starts embed
+    print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
+    #game_channel = client.get_channel(1167074199144235018)
+    game_channel = client.get_channel(902414002980782110)
     
-    game_channel = client.get_channel(1167074199144235018)
+    global command_in_use
+    
+    if command_in_use:
+        await game_channel.send("The command is currently in use. Please try again later.")
+        return
     
     await interaction.response.defer()
+    user = interaction.user
+    
+    # Set the flag to indicate the command is in use
+    command_in_use = True
 
     await reset_game()
     embed = discord.Embed(title='Tetris in Discord', description=format_board_as_str(), color=embed_colour)
@@ -244,17 +260,24 @@ async def tetris(interaction: Interaction): #Starts embed
     header = await interaction.followup.send("Lets Play Tetris")
     await asyncio.sleep(3)
     await header.delete()
-
     
     #On new reaction:
     #Update board and board_as_str
     #await msg.edit(embed=embed)
 
+    # Store the user's ID for later verification
+    user_id = str(user.id)
+    client.user_data[user_id] = msg.id
+
 @client.event
 async def on_reaction_add(reaction, user):
+    global command_in_use
     global h_movement
     global rotation_pos
-    if user != client.user:
+    # Check if the user who reacted is the same user who initiated the command
+    message_id = reaction.message.id
+    user_id = str(user.id)
+    if user_id in client.user_data and client.user_data[user_id] == message_id:
         msg = reaction.message
         if str(reaction.emoji) == "▶": #Play button pressed
             print('User pressed play')
@@ -271,6 +294,7 @@ async def on_reaction_add(reaction, user):
             await msg.add_reaction("❌") #Stop game
             starting_shape = get_random_shape()
             await run_game(msg, starting_shape)
+        
 
         if str(reaction.emoji) == "⬅": #Left button pressed
             print('Left button pressed')
@@ -298,9 +322,13 @@ async def on_reaction_add(reaction, user):
             #In future maybe put score screen here or a message saying stopping.
             await reset_game()
             await msg.delete()
+            command_in_use = False
         if str(reaction.emoji) == "🔴":
             await msg.edit(content="")
             
+# Initialize a dictionary to store user data for the bot
+client.user_data = {}
+
 board = []
 num_of_rows = 18
 num_of_cols = 10
@@ -580,6 +608,7 @@ def get_next_pos(cur_shape_pos):
 
 
 async def run_game(msg, cur_shape):
+    global command_in_use
     global is_new_shape
     global h_movement
     global rotate_clockwise
@@ -640,6 +669,7 @@ async def run_game(msg, cur_shape):
         await msg.remove_reaction("➡", client.user) #Right
         await msg.remove_reaction("🔃", client.user) #Rotate
         await msg.add_reaction("▶") #Play
+        command_in_use = False
 
 
 async def reset_game():
