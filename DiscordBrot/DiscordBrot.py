@@ -234,40 +234,45 @@ command_in_use = False
 @cooldown_command(1, 60)
 async def tetris(interaction: Interaction): #Starts embed
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
-    #game_channel = client.get_channel(1167074199144235018)
-    game_channel = client.get_channel(902414002980782110)
-    
     global command_in_use
     
-    if command_in_use:
-        await game_channel.send("The command is currently in use. Please try again later.")
-        return
+    game_channel = client.get_channel(1167074199144235018)
+    #game_channel = client.get_channel(902414002980782110)
+    channel_id = interaction.channel
+    print(f">{channel_id} + {game_channel}")
     
-    await interaction.response.defer()
-    user = interaction.user
+    if channel_id == game_channel: 
+        if command_in_use:
+            await game_channel.send("The command is currently in use. Please try again later.", delete_after=10)
+            return
     
-    # Set the flag to indicate the command is in use
-    command_in_use = True
+        await interaction.response.defer()
+        user = interaction.user
+    
+        # Set the flag to indicate the command is in use
+        command_in_use = True
 
-    await reset_game()
-    embed = discord.Embed(title='Tetris in Discord', description=format_board_as_str(), color=embed_colour)
-    embed.add_field(name='How to Play:', value='Use ⬅ ⬇ ➡ to move left, down, and right respectively. \n  \n Use 🔃 to rotate the shape clockwise. \n \n Press ▶ to Play.', inline=False)
-    msg = await interaction.channel.send(embed=embed)
+        await reset_game()
+        embed = discord.Embed(title='Tetris in Discord', description=format_board_as_str(), color=embed_colour)
+        embed.add_field(name='How to Play:', value='Use ⬅ ⬇ ➡ to move left, down, and right respectively. \n  \n Use 🔃 to rotate the shape clockwise. \n \n Press ▶ to Play.', inline=False)
+        msg = await game_channel.send(embed=embed)
 
-    #Add button choices / reactions
-    await msg.add_reaction("▶") #Play
+        #Add button choices / reactions
+        await msg.add_reaction("▶") #Play
     
-    header = await interaction.followup.send("Lets Play Tetris")
-    await asyncio.sleep(3)
-    await header.delete()
+        header = await interaction.followup.send("Lets Play Tetris")
+        await header.delete()
     
-    #On new reaction:
-    #Update board and board_as_str
-    #await msg.edit(embed=embed)
+        #On new reaction:
+        #Update board and board_as_str
+        #await msg.edit(embed=embed)
 
-    # Store the user's ID for later verification
-    user_id = str(user.id)
-    client.user_data[user_id] = msg.id
+        # Store the user's ID for later verification
+        user_id = str(user.id)
+        client.user_data[user_id] = msg.id
+        
+    else:
+        await interaction.response.send_message("You can't use this command in this channel.", delete_after=10, ephemeral=True)
 
 @client.event
 async def on_reaction_add(reaction, user):
