@@ -229,7 +229,7 @@ async def praiseme(interaction: Interaction):
 @commands.guild_only()
 async def tetris(interaction: Interaction): #Starts embed
     
-    game_channel = client.get_channel(902414002980782110)
+    game_channel = client.get_channel(1167074199144235018)
     
     await interaction.response.defer()
 
