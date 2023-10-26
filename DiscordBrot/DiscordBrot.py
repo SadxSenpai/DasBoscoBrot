@@ -121,9 +121,6 @@ class BoscoBot(Client):
 
 # Variable to store the bot class and interact with it
 client = BoscoBot(intents=Intents.default())
-Intents.dm_messages = False
-Intents.dm_reactions = False
-Intents.dm_typing = False
     
 #when the bot is ready, print a message in the console
 @client.event
@@ -202,6 +199,7 @@ async def pdf_loop():
             time.sleep(2)
 
 @client.tree.command()
+@commands.guild_only()
 async def hello(interaction: Interaction):
     # Responds in the console that the command has been ran
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
@@ -212,7 +210,8 @@ async def hello(interaction: Interaction):
     """))
     
 @client.tree.command()
-async def praisme(interaction: Interaction):
+@commands.guild_only()
+async def praiseme(interaction: Interaction):
     # Responds in the console that the command has been ran
     print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
 
