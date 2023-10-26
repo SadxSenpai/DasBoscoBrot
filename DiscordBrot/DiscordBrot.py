@@ -129,7 +129,6 @@ async def on_ready():
     """), end="\n\n")
     
     print("Ready!")
-    #pdf_loop.start()
     
 @tasks.loop(hours=168)
 async def pdf_loop():
@@ -200,6 +199,19 @@ async def hello(interaction: Interaction):
     await interaction.response.send_message(inspect.cleandoc(f"""
         Hi **{interaction.user}**, thank you for saying hello to me.
     """))
+    
+@client.tree.command()
+@commands.guild_only()
+async def foodloops(interaction: Interaction):
+    # Responds in the console that the command has been ran
+    print(f"> {Style.BRIGHT}{interaction.user}{Style.RESET_ALL} used the command.")
+
+    pdf_loop.start()
+
+    # Then responds in the channel with this message
+    await interaction.response.send_message(inspect.cleandoc(f"""
+        Hi **{interaction.user}**, foodloops commenced.
+    """), delete_after=10)
     
 @client.tree.command()
 @commands.guild_only()
