@@ -211,7 +211,7 @@ async def foodloops(interaction: Interaction):
     # Then responds in the channel with this message
     await interaction.response.send_message(inspect.cleandoc(f"""
         Hi **{interaction.user}**, foodloops commenced.
-    """), delete_after=10)
+    """),ephemeral=True, delete_after=10)
     
 @client.tree.command()
 @commands.guild_only()
