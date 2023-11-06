@@ -168,13 +168,13 @@ async def pdf_loop():
     #convert all pdf files  to an image
     popplerpath = r'poppler-23.08.0\Library\bin'
     
-    counter = 1
+    counter2 = 1
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            pages = convert_from_path(f'Speiseplan/{filename}', 500,first_page=1, last_page=1)
+            pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
             for page in pages:
-                page.save('Speiseplan/essen' + str(counter) +'.jpg', 'JPEG')
-                counter += 1
+                page.save('Speiseplan/essen' + str(counter2) +'.jpg', 'JPEG')
+                counter2 += 1        
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
                 
@@ -182,9 +182,11 @@ async def pdf_loop():
     channel = client.get_channel(1166651023822159882)
     
     #send all .jpg files in the folder Speiseplan
+    counter3 = 1
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.jpg'):
-            file = discord.File(f'Speiseplan/{filename}')
+            file = discord.File(f'Speiseplan/essen' + str(counter3) +'.jpg')
+            counter3 += 1
             await channel.send(file=file, delete_after=86400)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
