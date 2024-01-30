@@ -150,7 +150,7 @@ async def pdf_loop():
     #download the pdf from google drive with gdown
     print(f"> downloading pdfs from google drive")
     url = "https://drive.google.com/drive/folders/1WB5lNSE901jWigIAk0dgxKIG-ljaSzQO"
-    gdown.download_folder(url, quiet=True, use_cookies=False)
+    gdown.download(url, quiet=True, use_cookies=False)
     print(f"> pdfs downloaded")
     
     #wait 5 seconds
