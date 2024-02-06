@@ -160,12 +160,13 @@ async def pdf_loop():
     #sort the downloaded files alphabetically
     print(f"> sorting files")
     files = os.listdir('Speiseplan')
-    files.sort(reverse=True)
+    files.sort()
     time.sleep(2)
     print(f"> files sorted")
 
     #rename the pdf files inside the folder Speiseplan
     counter = 1
+    filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
             os.rename(f'Speiseplan/{filename}', f'Speiseplan/file' + str(counter) + '.pdf')
@@ -175,7 +176,7 @@ async def pdf_loop():
     #sort the downloaded files alphabetically
     print(f"> sorting files Part 2")
     files = os.listdir('Speiseplan')
-    files.sort(reverse=True)
+    files.sort(reverse=False)
     time.sleep(2)
     print(f"> files sorted 2 *electric boogaloo")
     
@@ -183,6 +184,7 @@ async def pdf_loop():
     popplerpath = r'poppler-23.11.0\Library\bin'
     
     counter2 = 1
+    filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
             pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
