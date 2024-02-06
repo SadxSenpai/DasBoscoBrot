@@ -188,7 +188,7 @@ async def pdf_loop():
     #sort the downloaded files alphabetically
     print(f"> sorting files")
     files = os.listdir('Speiseplan')
-    files.sort()
+    files.sort(reverse=True)
     time.sleep(2)
     print(f"> files sorted 2 *electric boogaloo")
                 
