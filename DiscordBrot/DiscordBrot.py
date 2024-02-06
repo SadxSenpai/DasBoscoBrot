@@ -202,9 +202,12 @@ async def pdf_loop():
     print('sending weekly message...')
     channel = client.get_channel(1166651023822159882)
     
-    #send all .jpg files in the folder Speiseplan
+    #send all .jpg files in the folder Speiseplan in reversed alphabetical order
     counter3 = 1
-    for filename in os.listdir('Speiseplan'):
+    
+    # Get the list of files, sort them in reverse alphabetical order
+    filenames = sorted(os.listdir('Speiseplan'), reverse=True)
+    for filename in filenames:
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/essen' + str(counter3) +'.jpg')
             counter3 += 1
