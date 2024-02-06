@@ -185,6 +185,13 @@ async def pdf_loop():
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
                 
+    #sort the downloaded files alphabetically
+    print(f"> sorting files")
+    files = os.listdir('Speiseplan')
+    files.sort()
+    time.sleep(2)
+    print(f"> files sorted 2 *electric boogaloo")
+                
     print('sending weekly message...')
     channel = client.get_channel(1166651023822159882)
     
