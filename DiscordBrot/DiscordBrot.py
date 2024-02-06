@@ -173,12 +173,12 @@ async def pdf_loop():
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed")
     
     #convert all pdf files  to an image
-    popplerpath = r'poppler-23.08.0\Library\bin'
+    popplerpath = r'poppler-23.11.0\Library\bin'
     
     counter2 = 1
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            pages = convert_from_path(f'Speiseplan/{filename}', 500,poppler_path=popplerpath, first_page=1, last_page=1)
+            pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
             for page in pages:
                 page.save('Speiseplan/essen' + str(counter2) +'.jpg', 'JPEG')
                 counter2 += 1        
