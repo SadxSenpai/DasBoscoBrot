@@ -212,6 +212,9 @@ async def pdf_loop():
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
 
+    futuretime = time.time() + 168 * 60 * 60
+    print(f"> current time: {time.ctime()} loop will restart at {futuretime}")
+
 @client.tree.command()
 @commands.guild_only()
 async def hello(interaction: Interaction):
