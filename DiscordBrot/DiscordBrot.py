@@ -171,6 +171,13 @@ async def pdf_loop():
             os.rename(f'Speiseplan/{filename}', f'Speiseplan/file' + str(counter) + '.pdf')
             counter += 1
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed")
+            
+    #sort the downloaded files alphabetically
+    print(f"> sorting files Part 2")
+    files = os.listdir('Speiseplan')
+    files.sort(reverse=True)
+    time.sleep(2)
+    print(f"> files sorted 2 *electric boogaloo")
     
     #convert all pdf files  to an image
     popplerpath = r'poppler-23.11.0\Library\bin'
@@ -186,11 +193,11 @@ async def pdf_loop():
                 time.sleep(2)
                 
     #sort the downloaded files alphabetically
-    print(f"> sorting files")
+    print(f"> sorting files Part 3")
     files = os.listdir('Speiseplan')
     files.sort(reverse=True)
     time.sleep(2)
-    print(f"> files sorted 2 *electric boogaloo")
+    print(f"> files sorted 3 *Revenge of the Sith")
                 
     print('sending weekly message...')
     channel = client.get_channel(1166651023822159882)
