@@ -183,15 +183,17 @@ async def pdf_loop():
     #convert all pdf files  to an image
     popplerpath = r'poppler-23.11.0\Library\bin'
     
-    counter2 = 1  
+    counter2 = 1
+    counter4 = 1
 
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
+            pages = convert_from_path(f'Speiseplan/file' + str(counter4) + '.pdf', 500, first_page=1, last_page=1)
             for page in pages:
                 page.save('Speiseplan/essen' + str(counter2) +'.jpg', 'JPEG')
                 counter2 += 1
+                counter4 += 1
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
                 
