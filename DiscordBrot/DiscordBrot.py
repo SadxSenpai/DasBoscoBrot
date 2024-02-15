@@ -212,7 +212,7 @@ async def pdf_loop():
     counter3 = 2 
     
     # Get the list of files, sort them in reverse alphabetical order
-    filenames = sorted(os.listdir('Speiseplan'), reverse=True)
+    filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in filenames:
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
