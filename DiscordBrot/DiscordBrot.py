@@ -209,14 +209,14 @@ async def pdf_loop():
     channel = client.get_channel(1205332175302692894)
     
     #send all .jpg files in the folder Speiseplan in reversed alphabetical order
-    counter3 = 2 
+    counter3 = 4 
     
     # Get the list of files, sort them in reverse alphabetical order
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in filenames:
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
-            counter3 += 1
+            counter3 -= 1
             await channel.send(file=file, delete_after=86400)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
