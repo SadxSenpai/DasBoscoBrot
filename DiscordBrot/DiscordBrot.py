@@ -166,7 +166,7 @@ async def pdf_loop():
     print(f"> files sorted")
 
     #rename the pdf files inside the folder Speiseplan
-    counter = 1
+    counter = 2
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
@@ -184,7 +184,7 @@ async def pdf_loop():
     #convert all pdf files  to an image
     popplerpath = r'poppler-23.11.0\Library\bin'
     
-    counter2 = 1  
+    counter2 = 2 
 
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
@@ -209,7 +209,7 @@ async def pdf_loop():
     channel = client.get_channel(1205332175302692894)
     
     #send all .jpg files in the folder Speiseplan in reversed alphabetical order
-    counter3 = 1 
+    counter3 = 2 
     
     # Get the list of files, sort them in reverse alphabetical order
     filenames = sorted(os.listdir('Speiseplan'), reverse=True)
