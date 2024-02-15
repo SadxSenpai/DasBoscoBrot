@@ -169,7 +169,7 @@ async def pdf_loop():
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            os.rename(f'Speiseplan/{filename}', f'Speiseplan/file' + str(counter) + '.pdf')
+            os.rename(f'Speiseplan/{filename}', f'Speiseplan/' + str(counter) + '.pdf')
             counter += 1
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} renamed")
             
@@ -183,17 +183,16 @@ async def pdf_loop():
     #convert all pdf files  to an image
     popplerpath = r'poppler-23.11.0\Library\bin'
     
-    counter2 = 1
-    counter4 = 1
+    counter2 = 1  
 
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            pages = convert_from_path(f'Speiseplan/file' + str(counter4) + '.pdf', 500, first_page=1, last_page=1)
+            #pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
+            pages = convert_from_path(f'Speiseplan/{filename}', 500, poppler_path=popplerpath, first_page=1, last_page=1)
             for page in pages:
-                page.save('Speiseplan/essen' + str(counter2) +'.jpg', 'JPEG')
+                page.save('Speiseplan/' + str(counter2) +'.jpg', 'JPEG')
                 counter2 += 1
-                counter4 += 1
                 print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} converted to image")
                 time.sleep(2)
                 
@@ -215,7 +214,7 @@ async def pdf_loop():
     filenames = sorted(os.listdir('Speiseplan'), reverse=True)
     for filename in filenames:
         if filename.endswith('.jpg'):
-            file = discord.File(f'Speiseplan/essen' + str(counter3) +'.jpg')
+            file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
             counter3 += 1
             await channel.send(file=file, delete_after=86400)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
