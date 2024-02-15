@@ -133,7 +133,8 @@ async def on_ready():
 @tasks.loop(hours=168)
 async def pdf_loop():
 
-
+    files = os.listdir('Speiseplan')
+    files.sort()
     #delte exiting the contents of the folder Speiseplan
     folder = 'Speiseplan'
     for filename in os.listdir(folder):
