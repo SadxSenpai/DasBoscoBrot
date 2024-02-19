@@ -217,7 +217,7 @@ async def pdf_loop():
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
             counter3 -= 1
-            await channel.send(file=file, delete_after=86400)
+            await channel.send(file=file, delete_after=604800)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
 
