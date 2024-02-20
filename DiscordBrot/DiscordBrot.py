@@ -130,7 +130,7 @@ async def on_ready():
     
     print("Ready!")
     
-@tasks.loop(seconds=120)
+@tasks.loop(minutes=5)
 async def pdf_loop():
 
     files = os.listdir('Speiseplan')
@@ -218,7 +218,7 @@ async def pdf_loop():
             file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
             counter3 -= 1
             #await channel.send(file=file, delete_after=86400)
-            await channel.send(file=file, delete_after=110)
+            await channel.send(file=file, delete_after=120)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
 
