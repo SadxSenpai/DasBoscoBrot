@@ -130,7 +130,7 @@ async def on_ready():
     
     print("Ready!")
     
-@tasks.loop(hours=168)
+@tasks.loop(seconds=120)
 async def pdf_loop():
 
     files = os.listdir('Speiseplan')
@@ -217,12 +217,12 @@ async def pdf_loop():
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
             counter3 -= 1
-            await channel.send(file=file, delete_after=604800)
+            #await channel.send(file=file, delete_after=86400)
+            await channel.send(file=file, delete_after=110)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
 
-    futuretime = time.time() + 168 * 60 * 60
-    print(f"> current time: {time.ctime()} loop will restart at {futuretime}")
+    print(f"> current time: {time.ctime()} loop will restart in 7 days")
 
 @client.tree.command()
 @commands.guild_only()
