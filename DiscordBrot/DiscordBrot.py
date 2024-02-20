@@ -130,7 +130,7 @@ async def on_ready():
     
     print("Ready!")
     
-@tasks.loop(minutes=5)
+@tasks.loop(hours=24)
 async def pdf_loop():
 
     files = os.listdir('Speiseplan')
@@ -189,8 +189,8 @@ async def pdf_loop():
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
-            #pages = convert_from_path(f'Speiseplan/{filename}', 500, poppler_path=popplerpath, first_page=1, last_page=1)
+            #pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
+            pages = convert_from_path(f'Speiseplan/{filename}', 500, poppler_path=popplerpath, first_page=1, last_page=1)
             for page in pages:
                 page.save('Speiseplan/' + str(counter2) +'.jpg', 'JPEG')
                 counter2 += 1
@@ -209,7 +209,7 @@ async def pdf_loop():
     #channel = client.get_channel(1205332175302692894)
     
     #send all .jpg files in the folder Speiseplan in reversed alphabetical order
-    counter3 = 4 
+    counter3 = counter2 - 1
     
     # Get the list of files, sort them in reverse alphabetical order
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
@@ -217,8 +217,7 @@ async def pdf_loop():
         if filename.endswith('.jpg'):
             file = discord.File(f'Speiseplan/' + str(counter3) +'.jpg')
             counter3 -= 1
-            #await channel.send(file=file, delete_after=86400)
-            await channel.send(file=file, delete_after=120)
+            await channel.send(file=file, delete_after=86400)
             print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} sent")
             time.sleep(2)
 
