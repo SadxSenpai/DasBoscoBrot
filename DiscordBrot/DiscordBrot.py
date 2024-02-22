@@ -190,7 +190,7 @@ async def pdf_loop():
     filenames = sorted(os.listdir('Speiseplan'), reverse=False)
     for filename in os.listdir('Speiseplan'):
         if filename.endswith('.pdf'):
-            pages = convert_from_path(f'Speiseplan/{filename}', 500, first_page=1, last_page=1)
+            pages = convert_from_path((f'Speiseplan/' + str(counter2) +'.pdf'), 500, first_page=1, last_page=1)
             #pages = convert_from_path(f'Speiseplan/{filename}', 500, poppler_path=popplerpath, first_page=1, last_page=1)
             for page in pages:
                 page.save('Speiseplan/' + str(counter2) +'.jpg', 'JPEG')
