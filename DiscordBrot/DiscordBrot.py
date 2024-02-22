@@ -137,8 +137,9 @@ async def pdf_loop():
     files.sort()
     #delte exiting the contents of the folder Speiseplan
     folder = 'Speiseplan'
-    for filename in os.listdir(folder):
-        if not os.listdir(folder):
+    
+    if os.listdir("speiseplan"):
+        for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             try:
                 if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -148,8 +149,8 @@ async def pdf_loop():
                     shutil.rmtree(file_path)
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
-        else:
-            print(f"> {Style.BRIGHT}{filename}{Style.RESET_ALL} no files to deleted")
+    else:
+        pass
     
     #download the pdf from google drive with gdown
     print(f"> downloading pdfs from google drive")
