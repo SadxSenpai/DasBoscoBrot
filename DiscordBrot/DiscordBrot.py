@@ -150,7 +150,7 @@ async def pdf_loop():
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
     else:
-        pass
+        print(f"> {Style.BRIGHT}Speiseplan{Style.RESET_ALL} is empty")
     
     #download the pdf from google drive with gdown
     print(f"> downloading pdfs from google drive")
